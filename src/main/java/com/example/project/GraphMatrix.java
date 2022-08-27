@@ -78,8 +78,26 @@ public class GraphMatrix implements Graph {
     }
 
     public int countConnectedComponents() {
+        int countConnected = 0;
 
-        return -1;
+        //Se crea una lista para contabilizar los nodos visitados
+        ArrayList<Integer> visited = new ArrayList<>();
+
+        //Se recorre linealmente la cantidad de vertices, anotando los vertices visitados.
+        for (int v = 0; v < numVertices; ++v) {    
+            //Si no se ha visitado el verice (v), se utiliza la busqueda en profundidad, incrementando la cantidad de
+            //componentes conectados
+
+            if(!visited.contains(v)) {   
+                //La DFS lleva registro de los verices visitados, y solo incrementa los componentes conectados 
+                //cuando visita un vertice "aislado", realizando otra DFS
+                depthFirstSearch(v, visited);
+                countConnected++;
+            }
+            
+        }
+        System.out.println(countConnected);
+        return countConnected;
     }
 
     public static void main(String args[]) {

@@ -85,11 +85,64 @@ public class GraphAdjacentList implements Graph {
         this.numVertices = numVertices;
     }
 
+    public ArrayList<Vertex> depthFirstSearch(Vertex n, ArrayList<Vertex> visited) {
+        visited.add(n);
+        for (Vertex vAdjacent: n.adjacentVertices) {
+            if (!visited.contains(vAdjacent) ) {
+                depthFirstSearch(vAdjacent, visited);
+            }
+        }
+        return visited;
+    }
+
+
     public int countConnectedComponents(){
-        return -1;
+        int count = 0;
+        ArrayList <Vertex> visited = new ArrayList<Vertex>();
+        
+        //Usando la misma logica que en Matriz de Adyacencia se utiliza DFS
+        for(Vertex v : vertices){    
+            if (!visited.contains(v)) {
+                depthFirstSearch(v, visited);
+                count++;
+            }
+        }
+        return count;
     }
 
     public boolean removeVertex(int vertex){
+        //Se crea un arreglo para almacenar los vertices que tengan una arista con vertex
+        ArrayList<Integer> toDelete = new ArrayList<Integer>();
+        
+        //Se itera para almacenar los vertices 
+        for(Vertex v : vertices){    
+            for (Vertex v2 : v.adjacentVertices) {
+                //Si la data es proveniente de vertex, se almacena los vertices de "llegada"
+                if(v.data == vertex){
+                    toDelete.add(v2.data);
+                }
+                //Si la data "llega" a vertex, se almacena los vertices de "partida"
+                if(v2.data == vertex){
+                    toDelete.add(v.data);
+                }
+                
+            }
+
+        }
+
+        //En caso vertex no posea conexiones (aristas), no se ingresa a eliminar
+        for(int n: toDelete){   
+            //Se remueve las aristas 
+            removeEdge(vertex, n);
+            removeEdge(n, vertex);
+
+            //Cuando se llega al ultimo elemento, se reduce el numero de vertices en 1
+            if(n == toDelete.get(toDelete.size()-1)){
+                numVertices--;
+                return true;
+            }
+        }
+
         return false;
     }
 
